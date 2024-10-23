@@ -1,0 +1,18 @@
+<div class="card my-5">
+  <div class="card-body">
+    <form (ngSubmit)="onSubmit()" #gitForm="ngForm">
+      <div class="form-group">
+        <label for="path">URL Path</label>
+        <input type="text" [(ngModel)]="git.path"
+               class="form-control"
+               id="path"
+               name="path"
+               placeholder="Enter the path of the GIT"
+               required #path="ngModel">
+      </div>
+      <div [hidden]="!path.pristine" class="alert alert-danger">Path is required !</div>
+      <button type="submit" [disabled]="!gitForm.form.valid"
+              class="btn btn-info">Submit</button>
+    </form>
+  </div>
+</div>
