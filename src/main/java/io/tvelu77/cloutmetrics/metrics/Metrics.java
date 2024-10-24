@@ -1,13 +1,14 @@
 package io.tvelu77.cloutmetrics.metrics;
 
-import io.tvelu77.cloutmetrics.Utils;
 import io.tvelu77.cloutmetrics.git.Git;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import java.util.Map;
+import jakarta.persistence.Table;
+import java.util.Objects;
 
 /**
  * Represents a git metrics :
@@ -15,8 +16,10 @@ import java.util.Map;
  * - The languages ratio ;
  * - etc (TODO : add more metrics such as the top list of contributor !).
  */
+@Entity
+@Table
 public class Metrics {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column
@@ -25,10 +28,20 @@ public class Metrics {
   @Column
   private Long totalCommits;
   
-  @Column
-  private Map<Utils.Language, Double> languagesRatio;
-  
-  @OneToOne(mappedBy = "metrics")
-  private Git git;
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = Objects.requireNonNull(id);
+  }
+
+  public Long getTotalCommits() {
+    return totalCommits;
+  }
+
+  public void setTotalCommits(Long totalCommits) {
+    this.totalCommits = Objects.requireNonNull(totalCommits);
+  }
 
 }
