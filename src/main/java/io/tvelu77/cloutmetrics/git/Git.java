@@ -29,15 +29,15 @@ public class Git {
   @Column(length = 256, nullable = false)
   private String name;
   
-  @Column(nullable = false)
+  @Column(nullable = true)
   private LocalDateTime date;
   
-  @Column
+  @Column(nullable = false)
   private String url;
   
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "metric_id", referencedColumnName = "id")
-  private Metrics metric;
+  private Metrics metrics;
   
   /**
    * Git's empty constructor.
@@ -91,6 +91,14 @@ public class Git {
 
   public void setUrl(String url) {
     this.url = Objects.requireNonNull(url);
+  }
+  
+  public Metrics getMetrics() {
+    return metrics;
+  }
+  
+  public void setMetrics(Metrics metrics) {
+    this.metrics = Objects.requireNonNull(metrics);
   }
 
 }
