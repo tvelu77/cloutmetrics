@@ -45,7 +45,7 @@ public class MetricsOperations {
     var repository = openRepository(git.getName());
     var count = 0L;
     try (var gitRepository = new org.eclipse.jgit.api.Git(repository)) {
-      var commits = gitRepository.log().all().call();
+      var commits = gitRepository.log().call();
       count = StreamSupport.stream(commits.spliterator(), false).count();
     }
     return count;
