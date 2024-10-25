@@ -1,12 +1,10 @@
 package io.tvelu77.cloutmetrics.metrics;
 
-import io.tvelu77.cloutmetrics.git.Git;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Objects;
 
@@ -27,6 +25,17 @@ public class Metrics {
   
   @Column
   private Long totalCommits;
+  
+  @Column
+  private Status status;
+  
+  private enum Status {
+    NOT_LAUNCHED,
+    STARTED,
+    IN_PROGRESS,
+    FINISHED,
+    ERROR
+  }
   
   public Long getId() {
     return id;
