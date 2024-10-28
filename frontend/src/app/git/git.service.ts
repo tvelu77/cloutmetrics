@@ -14,4 +14,16 @@ export class GitService {
   findAll(): Observable<Git[]> {
     return this.http.get<Git[]>(API_ROUTE + '/gits');
   }
+
+  findById(id: number): Observable<Git> {
+    return this.http.get<Git>(API_ROUTE + '/gits/' + id);
+  }
+
+  add(git: Git): Observable<Git> {
+    return this.http.post<Git>(API_ROUTE + '/gits', git);
+  }
+
+  delete(id: number): Observable<Git> {
+    return this.http.delete<Git>(API_ROUTE + '/gits/' + id);
+  }
 }

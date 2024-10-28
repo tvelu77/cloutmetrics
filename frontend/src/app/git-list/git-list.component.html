@@ -1,24 +1,30 @@
 @defer (when !loading) {
-    <table mat-table [dataSource]="gits" class="mat-elevation-z8">
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef> No. </th>
-          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-        </ng-container>
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </ng-container>
-        <ng-container matColumnDef="url">
-          <th mat-header-cell *matHeaderCellDef> Link </th>
-          <td mat-cell *matCellDef="let element"> {{element.url}} </td>
-        </ng-container>
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+  <p-table [value]="gits" [tableStyle]="{'min-width': '60rem'}">
+    <ng-template pTemplate="header">
+        <tr>
+            <th id="id" pSortableColumn="id" style="width:20%">
+                Id <p-sortIcon field="id" />
+            </th>
+            <th id="name" pSortableColumn="name" style="width:20%">
+                Name <p-sortIcon field="name" />
+            </th>
+            <th id="url" pSortableColumn="url" style="width:20%">
+                Url <p-sortIcon field="url" />
+            </th>
+            <th id="date" pSortableColumn="date" style="width:20%">
+                Date <p-sortIcon field="date" />
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.url }}</td>
+            <td>{{ product.date|date: 'dd-MM-yyyy HH:mm:ss' }}</td>
+        </tr>
+    </ng-template>
+</p-table>
 }
   
   

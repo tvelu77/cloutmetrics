@@ -1,1 +1,9 @@
-<p>git works!</p>
+
+        @defer (when !loading) {
+
+        } @placeholder (minimum 500ms) {
+        }
+        @defer (when !loading) {
+            {{ git.metrics?.totalCommits }}
+        } @placeholder (minimum 500ms) {
+        }
