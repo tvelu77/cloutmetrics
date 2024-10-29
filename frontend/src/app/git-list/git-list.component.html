@@ -1,5 +1,5 @@
 @defer (when !loading) {
-  <p-table [value]="gits" [tableStyle]="{'min-width': '60rem'}">
+  <p-table [value]="gits" [tableStyle]="{'min-width': '60rem'}" selectionMode="single" [(selection)]="selectedGit" [metaKeySelection]="true" dataKey="id" (onRowSelect)="handleSelect($event)">
     <ng-template pTemplate="header">
         <tr>
             <th id="id" pSortableColumn="id" style="width:20%">
@@ -16,12 +16,12 @@
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product>
-        <tr>
-            <td>{{ product.id }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.url }}</td>
-            <td>{{ product.date|date: 'dd-MM-yyyy HH:mm:ss' }}</td>
+    <ng-template pTemplate="body" let-git>
+        <tr [pSelectableRow]="git">
+            <td>{{ git.id }}</td>
+            <td>{{ git.name }}</td>
+            <td>{{ git.url }}</td>
+            <td>{{ git.date|date: 'dd-MM-yyyy HH:mm:ss' }}</td>
         </tr>
     </ng-template>
 </p-table>

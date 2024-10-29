@@ -3,11 +3,12 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { GitService } from '../git/git.service';
 import { Git } from '../git/git';
 import { ButtonModule } from 'primeng/button';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-git-add',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, ButtonModule],
+  imports: [ReactiveFormsModule, FormsModule, ButtonModule, RouterLink, RouterLinkActive],
   templateUrl: './git-add.component.html',
   styleUrl: './git-add.component.scss'
 })
@@ -17,7 +18,7 @@ export class GitAddComponent {
     name: new FormControl('', Validators.required),
   });
 
-  constructor(private readonly gitService: GitService) {}
+  constructor(private readonly gitService: GitService, private readonly router: Router) {}
 
   onSubmit() {
     const newGit: Git = {
@@ -25,8 +26,7 @@ export class GitAddComponent {
       name: this.gitAddForm.value.name!
     }
     this.gitService.add(newGit).subscribe(git => {
-      console.log("hey");
+      this.router.navigate(['']);
     })
-
   }
 }

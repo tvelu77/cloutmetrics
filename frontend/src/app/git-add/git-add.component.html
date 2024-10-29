@@ -11,7 +11,7 @@
         </small>
     </div>
 
-    <div class="flex flex-column gap-2">
+    <div class="flex flex-column gap-2 mb-2">
         <label for="url">URL</label>
         <input 
             pInputText 
@@ -22,6 +22,10 @@
             The git repository url !
         </small>
     </div>
-
+    <div class="flex flex-row gap-2 mb-2 justify-content-between">
     <button pButton type="submit" label="Submit" [disabled]="gitAddForm.invalid"></button>
+    <a [routerLink]="['']" routerLinkActive="router-link-active">
+        <button pButton type="button" label="Cancel" class="p-button-danger"></button>
+    </a>
+    </div>
 </form>
