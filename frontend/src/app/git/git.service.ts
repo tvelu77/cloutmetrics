@@ -26,4 +26,8 @@ export class GitService {
   delete(id: number): Observable<Git> {
     return this.http.delete<Git>(API_ROUTE + '/gits/' + id);
   }
+
+  update(git: Git, id: number): Observable<Git> {
+    return this.http.put<Git>(API_ROUTE + '/gits/' + id, git);
+  }
 }
