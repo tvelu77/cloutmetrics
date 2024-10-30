@@ -1,0 +1,31 @@
+<form [formGroup]="gitAddForm" (ngSubmit)="onSubmit()">
+    <div class="flex flex-column gap-2 mb-2">
+        <label for="name">Name</label>
+        <input 
+            pInputText 
+            id="name" 
+            aria-describedby="name-help" 
+            formControlName="name" />
+        <small id="name-help">
+            Give your entry a little nice name !
+        </small>
+    </div>
+
+    <div class="flex flex-column gap-2 mb-2">
+        <label for="url">URL</label>
+        <input 
+            pInputText 
+            id="url" 
+            aria-describedby="url-help" 
+            formControlName="url" />
+        <small id="url-help">
+            The git repository url !
+        </small>
+    </div>
+    <div class="flex flex-row gap-2 mb-2 justify-content-between">
+    <button pButton type="submit" label="Submit" [disabled]="gitAddForm.invalid"></button>
+    <a [routerLink]="['']" routerLinkActive="router-link-active">
+        <button pButton type="button" label="Cancel" class="p-button-danger"></button>
+    </a>
+    </div>
+</form>

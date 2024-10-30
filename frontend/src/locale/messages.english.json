@@ -1,0 +1,9 @@
+{
+  "locale": "en-US",
+  "translations": {
+    "header": {
+      "add": "Add a Git",
+      "share": "Share CloutMetrics"
+    }
+  }
+}
