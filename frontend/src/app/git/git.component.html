@@ -1,15 +1,31 @@
 <div class="card">
+    <p-toast position="bottom-right" />
     <p-tabView (onChange)="handleChange($event)">
         <p-tabPanel header="Overview" leftIcon="pi pi-eye" [selected]="true">
-            <div class="p-3 border-round-sm bg-primary font-bold">
+            <div class="p-3 font-bold">
                 <p class="text-4xl text-center">{{ git.name }}</p>
                 <p class="text-xl text-justify">Last modification : {{ git.date|date: 'dd-MM-yyyy HH:mm:ss' }}</p>
                 <p class="text-xl text-justify">URL : <a [href]="git.url">{{ git.url }}</a></p>
             </div>
         </p-tabPanel>
         <p-tabPanel header="Metrics" leftIcon="pi pi-chart-pie">
+            <p-tag [value]="git.metrics?.totalCommits?.toString() + ' commits'" />
         </p-tabPanel>
         <p-tabPanel header="Manage" leftIcon="pi pi-cog">
+            <form [formGroup]="renameForm" (ngSubmit)="rename()">
+                <p class="text-4xl text-center">Rename</p>
+                <input 
+                pInputText 
+                id="name" 
+                aria-describedby="name-help" 
+                formControlName="name" />
+                <button pButton type="submit" label="Submit" [disabled]="renameForm.invalid"></button>
+            </form>
+            <form [formGroup]="deleteForm" (ngSubmit)="delete()">
+                <p class="text-4xl text-center">Delete</p>
+                <button pButton type="submit" label="Delete"></button>
+            </form>
+            <p class="text-4xl text-center">Delete</p>
         </p-tabPanel>
         <p-tabPanel header="Go back to main page" leftIcon="pi pi-undo">
         </p-tabPanel>
