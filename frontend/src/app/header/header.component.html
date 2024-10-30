@@ -1,0 +1,25 @@
+<p-toolbar>
+  <div class="p-toolbar-group-start">
+    <a [routerLink]="['']" routerLinkActive="router-link-active">
+      <p-tag [rounded]="true">
+        <i class="pi pi-bullseye mr-2"></i>
+        <span class="text-base">
+          CloutMetrics
+      </span>
+      </p-tag>
+    </a>
+  </div>
+  <div class="p-toolbar-group-end">
+    <a [routerLink]="['/add']" routerLinkActive="router-link-active" >
+    <p-avatar 
+    icon="pi pi-plus" 
+    styleClass="mr-2"  />
+    </a>
+    <a href="https://github.com/tvelu77/cloutmetrics" target="_blank">
+    <p-avatar 
+    icon="pi pi-github" 
+    styleClass="mr-2"  />
+    </a>
+    <p-inputSwitch [ngModel]="isDarkMode" (ngModelChange)="toggleLightDark()" />
+  </div>
+</p-toolbar>

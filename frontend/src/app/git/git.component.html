@@ -1,0 +1,17 @@
+<div class="card">
+    <p-tabView (onChange)="handleChange($event)">
+        <p-tabPanel header="Overview" leftIcon="pi pi-eye" [selected]="true">
+            <div class="p-3 border-round-sm bg-primary font-bold">
+                <p class="text-4xl text-center">{{ git.name }}</p>
+                <p class="text-xl text-justify">Last modification : {{ git.date|date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                <p class="text-xl text-justify">URL : <a [href]="git.url">{{ git.url }}</a></p>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Metrics" leftIcon="pi pi-chart-pie">
+        </p-tabPanel>
+        <p-tabPanel header="Manage" leftIcon="pi pi-cog">
+        </p-tabPanel>
+        <p-tabPanel header="Go back to main page" leftIcon="pi pi-undo">
+        </p-tabPanel>
+    </p-tabView>
+</div>

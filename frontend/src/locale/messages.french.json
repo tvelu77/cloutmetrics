@@ -1,0 +1,9 @@
+{
+  "locale": "fr",
+  "translations": {
+    "header": {
+      "add": "Rajouter un Git",
+      "share": "Partager CloutMetrics"
+    }
+  }
+}
