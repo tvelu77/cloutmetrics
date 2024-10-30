@@ -3,15 +3,27 @@ package io.tvelu77.cloutmetrics;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 /**
  * Defines methods and unmodifiable fields usable everywhere.
  */
+@Component
+@PropertySource("classpath:application.properties")
 public class Utils {
   
-  public static final String LOCAL_REPOSITORY_PATH = "src/main/resources/repositories/";
   public static final Map<String, String> EXTENSION = new HashMap<>();
   
+  @Autowired
+  private Environment env;
+
+  public String getLocalRepositoryPath() {
+    return env.getProperty("repositories.path");
+  }
+ 
   /**
    * Languages with their extension.
    */

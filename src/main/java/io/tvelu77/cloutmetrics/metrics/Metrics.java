@@ -1,11 +1,14 @@
 package io.tvelu77.cloutmetrics.metrics;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,6 +28,10 @@ public class Metrics {
   
   @Column
   private Long totalCommits;
+  
+  @ElementCollection
+  @MapKeyColumn(name = "language")
+  private Map<String, Double> languagesRatio;
   
   @Column
   private Status status;
@@ -51,6 +58,14 @@ public class Metrics {
 
   public void setTotalCommits(Long totalCommits) {
     this.totalCommits = Objects.requireNonNull(totalCommits);
+  }
+  
+  public Map<String, Double> getLanguagesRatio() {
+    return languagesRatio;
+  }
+  
+  public void setLanguagesRatio(Map<String, Double> languagesRatio) {
+    this.languagesRatio = Objects.requireNonNull(languagesRatio);
   }
 
 }
