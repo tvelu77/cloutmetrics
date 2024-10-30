@@ -4,8 +4,13 @@ import io.tvelu77.cloutmetrics.ApplicationService;
 import io.tvelu77.cloutmetrics.Utils;
 import io.tvelu77.cloutmetrics.metrics.Metrics;
 import io.tvelu77.cloutmetrics.metrics.MetricsOperations;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -22,6 +27,9 @@ public class GitService implements ApplicationService<Git> {
 
   @Autowired
   private GitRepository gitRepository;
+  
+  @Autowired
+  private Utils utils;
 
   @Override
   public boolean add(Git git) {
@@ -37,17 +45,20 @@ public class GitService implements ApplicationService<Git> {
     var executor = Executors.newSingleThreadExecutor();
     executor.submit(() -> {
       try {
-        cloneFromRepository(toBeSaved);
-        var map = MetricsOperations.metricComputer(toBeSaved);
-        metrics.setTotalCommits(Long.parseLong(map.get("numberCommits")));
+        var operations = new MetricsOperations(git,
+            Path.of(utils.getLocalRepositoryPath() + git.getName()));
+        operations.openRepository();
+        metrics.setTotalCommits(operations.countCommits());
         toBeSaved.setMetrics(metrics);
         gitRepository.save(toBeSaved);
-      } catch (GitAPIException e) {
-        // TODO Auto-generated catch block
+        metrics.setLanguagesRatio(operations.languageRatio());
+        gitRepository.save(toBeSaved);
+        operations.closeRepository();
+      } catch (GitAPIException | IOException e) {
+        System.out.println("error :" + e);
+        gitRepository.delete(git);
       }
     });
-    toBeSaved.setMetrics(metrics);
-    gitRepository.save(toBeSaved);
     return true;
   }
 
@@ -55,19 +66,29 @@ public class GitService implements ApplicationService<Git> {
   public boolean delete(Long id) {
     Objects.requireNonNull(id);
     var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
-    gitRepository.delete(git);
-    return true;
+    try {
+      deleteDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()));
+      gitRepository.delete(git);
+      return true;
+    } catch (IOException e) {
+      return false;
+    }
   }
 
-  @Override
+  @Override 
   public boolean update(Git newGit, Long id) {
     Objects.requireNonNull(newGit);
     Objects.requireNonNull(id);
     var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
-    git.setName(newGit.getName());
-    git.setUrl(newGit.getUrl());
-    gitRepository.save(git);
-    return true;
+    try {
+      renameDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()),
+          Path.of(utils.getLocalRepositoryPath() + newGit.getName()));
+      git.setName(newGit.getName());
+      gitRepository.save(git);
+      return true;
+    } catch (IOException e) {
+      return false;
+    }
   }
 
   @Override
@@ -79,9 +100,18 @@ public class GitService implements ApplicationService<Git> {
   public Git findById(Long id) {
     return gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
   }
-
-  private void cloneFromRepository(Git git) throws GitAPIException {
-    org.eclipse.jgit.api.Git.cloneRepository().setURI(git.getUrl())
-        .setDirectory(Path.of(Utils.LOCAL_REPOSITORY_PATH + git.getName()).toFile()).call();
+  
+  private void deleteDirectory(Path directory) throws IOException {
+    try (var paths = Files.walk(directory)) {
+      paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+    }
   }
+  
+  private void renameDirectory(Path directory, Path newDirectory) throws IOException {
+    Files.move(directory,
+        newDirectory,
+        StandardCopyOption.REPLACE_EXISTING,
+        StandardCopyOption.ATOMIC_MOVE);   
+  }
+  
 }
