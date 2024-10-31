@@ -10,6 +10,7 @@
         </p-tabPanel>
         <p-tabPanel header="Metrics" leftIcon="pi pi-chart-pie">
             <p-tag [value]="git.metrics?.totalCommits?.toString() + ' commits'" />
+            <p-chart type="bar" [data]="data" [options]="options"/>
         </p-tabPanel>
         <p-tabPanel header="Manage" leftIcon="pi pi-cog">
             <form [formGroup]="renameForm" (ngSubmit)="rename()">
