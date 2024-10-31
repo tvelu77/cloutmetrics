@@ -3,6 +3,8 @@ package io.tvelu77.cloutmetrics;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,6 +13,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * It's where all the magic begins (aka, spring boot is started).
  */
 @SpringBootApplication
+@PropertySources({
+  @PropertySource("application.properties"),
+  @PropertySource("application-local.properties")
+})
 public class CloutmetricsApplication {
 
   public static void main(String[] args) {
