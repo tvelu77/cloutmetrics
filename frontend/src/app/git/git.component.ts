@@ -4,16 +4,17 @@ import { Git } from './git';
 import { GitService } from './git.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
-import { DatePipe } from '@angular/common';
+import { DatePipe, KeyValuePipe, NgFor } from '@angular/common';
 import { TagModule } from 'primeng/tag';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { ChartModule } from 'primeng/chart';
 
 @Component({
   selector: 'app-git',
   standalone: true,
-  imports: [TabViewModule, DatePipe, TagModule, RouterLink, RouterLinkActive, ReactiveFormsModule, ButtonModule, ToastModule],
+  imports: [TabViewModule, DatePipe, TagModule, RouterLink, RouterLinkActive, ReactiveFormsModule, ButtonModule, ToastModule, ChartModule, NgFor, KeyValuePipe],
   templateUrl: './git.component.html',
   styleUrl: './git.component.scss',
   providers: [MessageService]
@@ -27,6 +28,8 @@ export class GitComponent {
     name: new FormControl('', Validators.required),
   });
   deleteForm = new FormGroup({});
+  data!: any;
+  options!: any;
   constructor(private readonly route: ActivatedRoute,
     private readonly gitService: GitService,
     private readonly router: Router,
@@ -57,6 +60,25 @@ export class GitComponent {
     this.gitService.findById(+id).subscribe((response) => {
       this.git = response;
       this.loading = false;
+      const documentStyle = getComputedStyle(document.documentElement);
+      const textColor = documentStyle.getPropertyValue('--text-color');
+      const data = Object.values(this.git.metrics?.languagesRatio!).map(value => Math.round(value));
+      const colors = this.getColors(data.length);
+      this.data = {
+        labels: Object.keys(this.git.metrics?.languagesRatio!),
+        datasets: [
+          {
+            label: 'Number of files',
+            data: data,
+            backgroundColor: colors,
+            hoverBackgroundColor: colors.map(color => this.lightenColor(color, 20)),
+            borderWidth: 1
+          }
+        ]
+      };
+      this.options = {
+        cutout: '60%',
+      };
     });
   }
 
@@ -78,6 +100,32 @@ export class GitComponent {
     this.gitService.delete(this.git.id!).subscribe((response) => {
       this.router.navigate(['']);
     });
+  }
+
+  private getColors(length: number): string[] {
+    const colors = [];
+    for (let i = 0; i < length; i++) {
+      colors.push(this.getRandomColor());
+    }
+    return colors;
+  }
+
+  private getRandomColor(): string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  private lightenColor(color: string, percent: number): string {
+    let num = parseInt(color.slice(1), 16);
+    let amt = Math.round(2.55 * percent);
+    let R = (num >> 16) + amt;
+    let G = (num >> 8 & 0x00FF) + amt;
+    let B = (num & 0x0000FF) + amt;
+    return `#${(0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1)}`;
   }
 
 
