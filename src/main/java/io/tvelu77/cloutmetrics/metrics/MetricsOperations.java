@@ -105,7 +105,11 @@ public class MetricsOperations {
     while (treeWalk.next()) {
       var path = treeWalk.getPathString();
       var fileName = path.substring(path.lastIndexOf("/") + 1);
-      var extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+      var index = fileName.lastIndexOf(".");
+      if (index == -1) {
+        continue;
+      }
+      var extension = fileName.substring(index);
       var language = "";
       if ((language = Utils.EXTENSION.get(extension)) != null) {
         map.merge(language, 1, Integer::sum);
