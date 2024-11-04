@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Utils {
   
-  public static final Map<String, String> EXTENSION = new HashMap<>();
+  public static final Map<String, Language> EXTENSION = new HashMap<>();
   
   @Autowired
   private Environment env;
@@ -34,7 +34,7 @@ public class Utils {
       for (var language : languages) {
         if (language.getExtensions() != null) {
           for (var extension : language.getExtensions()) {
-            EXTENSION.putIfAbsent(extension, language.getName());
+            EXTENSION.putIfAbsent(extension, language);
           }
         }
       }

@@ -1,5 +1,6 @@
 package io.tvelu77.cloutmetrics.utils;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +12,9 @@ import java.util.Objects;
 public class Language {
   
   private String name;
-  private String type;
+
+  private LanguageType type;
+
   private List<String> extensions;
   
   public String getName() {
@@ -22,11 +25,11 @@ public class Language {
     this.name = Objects.requireNonNull(name);
   }
   
-  public String getType() {
+  public LanguageType getType() {
     return type;
   }
   
-  public void setType(String type) {
+  public void setType(LanguageType type) {
     this.type = Objects.requireNonNull(type);
   }
   
