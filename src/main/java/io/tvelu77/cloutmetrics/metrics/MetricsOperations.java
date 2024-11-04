@@ -3,6 +3,7 @@ package io.tvelu77.cloutmetrics.metrics;
 import io.tvelu77.cloutmetrics.Utils;
 import io.tvelu77.cloutmetrics.git.Git;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -11,7 +12,6 @@ import java.util.Objects;
 import java.util.stream.StreamSupport;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -71,14 +71,55 @@ public class MetricsOperations {
    * Counts the commits done in a git repository.
    *
    * @return Long, the number of commits done.
-   * @throws NoHeadException If the HEAD reference is not present.
    * @throws GitAPIException See NoHeadException.
    */
-  public Long countCommits() throws NoHeadException, GitAPIException {
-    var count = 0L;
+  public Long countCommits() throws GitAPIException {
     var commits = jgit.log().call();
-    count = StreamSupport.stream(commits.spliterator(), false).count();
-    return count;
+    return StreamSupport.stream(commits.spliterator(), false).count();
+  }
+  
+  public Long countTags() throws GitAPIException {
+    var tags = jgit.tagList().call();
+    return StreamSupport.stream(tags.spliterator(), false).count();
+  }
+  
+  public Long countBranches() throws GitAPIException {
+    var branches = jgit.branchList().call();
+    return StreamSupport.stream(branches.spliterator(), false).count();
+  }
+  
+  /**
+   * Fetches the owner information of the git repository.
+   * If the user couldn't be found, the string is "Unknown".
+   *
+   * @return A String with the name and email of the owner, Unknown otherwise.
+   */
+  public String getGitOwner() {
+    var repository = jgit.getRepository();
+    var config = repository.getConfig();
+    var name = config.getString("user", null, "name");
+    if (name == null) {
+      return "Unknown";
+    }
+    return name;  
+  }
+  
+  /**
+   * Counts the number of files for each extension.
+   *
+   * @return Map with the language name and its number of files in a git.
+   * @throws IOException If the file couldn't be opened.
+   */
+  public Map<String, Long> countFilesForEachExtension() throws IOException {
+    var repository = jgit.getRepository();
+    var head = repository.exactRef("HEAD");
+    try (var walk = new RevWalk(repository)) {
+      var commit = walk.parseCommit(head.getObjectId());
+      var tree = commit.getTree();
+      var treeWalk = new TreeWalk(repository);
+      treeWalk.addTree(tree);
+      return countExtension(treeWalk);
+    }
   }
   
   /**
@@ -95,12 +136,12 @@ public class MetricsOperations {
       var tree = commit.getTree();
       var treeWalk = new TreeWalk(repository);
       treeWalk.addTree(tree);
-      return countExtension(treeWalk);
+      return countLines(treeWalk);
     }
   }
   
-  private Map<String, Double> countExtension(TreeWalk treeWalk) throws IOException {
-    var map = new HashMap<String, Integer>();
+  private Map<String, Long> countExtension(TreeWalk treeWalk) throws IOException {
+    var map = new HashMap<String, Long>();
     treeWalk.setRecursive(true);
     while (treeWalk.next()) {
       var path = treeWalk.getPathString();
@@ -112,17 +153,40 @@ public class MetricsOperations {
       var extension = fileName.substring(index);
       var language = "";
       if ((language = Utils.EXTENSION.get(extension)) != null) {
-        map.merge(language, 1, Integer::sum);
+        map.merge(language, 1L, Long::sum);
+      }
+    }
+    return map;
+  }
+  
+  private Map<String, Double> countLines(TreeWalk treeWalk) throws IOException {
+    var map = new HashMap<String, Long>();
+    treeWalk.setRecursive(true);
+    while (treeWalk.next()) {
+      var path = treeWalk.getPathString();
+      var fileName = path.substring(path.lastIndexOf("/") + 1);
+      var index = fileName.lastIndexOf(".");
+      if (index == -1) {
+        continue;
+      }
+      var extension = fileName.substring(index);
+      var language = "";
+      if ((language = Utils.EXTENSION.get(extension)) != null) {
+        var lineCount = 0L;
+        try (var stream = Files.lines(Path.of(localPath + "/" + path), StandardCharsets.UTF_8)) {
+          lineCount = stream.count();
+        }
+        map.merge(language, lineCount, Long::sum);
       }
     }
     return averageOfMap(map);
   }
   
-  private Map<String, Double> averageOfMap(Map<String, Integer> map) {
+  private Map<String, Double> averageOfMap(Map<String, Long> map) {
     var finalMap = new HashMap<String, Double>();
-    var totalFiles = map.values().stream().mapToDouble(Double::valueOf).sum();
+    var totalLines = map.values().stream().mapToDouble(Double::valueOf).sum();
     for (var key : map.keySet()) {
-      var percentage = (map.get(key) / totalFiles) * 100;
+      var percentage = (map.get(key) / totalLines) * 100;
       finalMap.putIfAbsent(key, percentage);
     }
     return finalMap;

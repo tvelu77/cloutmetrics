@@ -28,10 +28,23 @@ public class Metrics {
   
   @Column
   private Long totalCommits;
+
+  @Column
+  private Long totalTags;
+
+  @Column
+  private Long totalBranches;
   
+  @Column
+  private String owner;
+
   @ElementCollection
   @MapKeyColumn(name = "language")
-  private Map<String, Double> languagesRatio;
+  private Map<String, Long> languageAndFileCount;
+
+  @ElementCollection
+  @MapKeyColumn(name = "language")
+  private Map<String, Double> languageRatio;
   
   @Column
   private Status status;
@@ -60,12 +73,45 @@ public class Metrics {
     this.totalCommits = Objects.requireNonNull(totalCommits);
   }
   
-  public Map<String, Double> getLanguagesRatio() {
-    return languagesRatio;
+  public Long getTotalTags() {
+    return totalTags;
+  }
+
+  public void setTotalTags(Long totalTags) {
+    this.totalTags = Objects.requireNonNull(totalTags);
   }
   
-  public void setLanguagesRatio(Map<String, Double> languagesRatio) {
-    this.languagesRatio = Objects.requireNonNull(languagesRatio);
+  public Map<String, Long> getLanguageAndFileCount() {
+    return languageAndFileCount;
   }
+
+  public void setLanguageAndFileCount(Map<String, Long> languageAndFileCount) {
+    this.languageAndFileCount = Objects.requireNonNull(languageAndFileCount);
+  }
+  
+  public Map<String, Double> getLanguageRatio() {
+    return languageRatio;
+  }
+
+  public void setLanguageRatio(Map<String, Double> languageRatio) {
+    this.languageRatio = Objects.requireNonNull(languageRatio);
+  }
+  
+  public Long getTotalBranches() {
+    return totalBranches;
+  }
+
+  public void setTotalBranches(Long totalBranches) {
+    this.totalBranches = Objects.requireNonNull(totalBranches);
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public void setOwner(String owner) {
+    this.owner = Objects.requireNonNull(owner);
+  }
+  
 
 }
