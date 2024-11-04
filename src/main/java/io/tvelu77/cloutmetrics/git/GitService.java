@@ -42,31 +42,30 @@ public class GitService implements ApplicationService<Git> {
     metrics.setTotalCommits(0L);
     toBeSaved.setMetrics(metrics);
     gitRepository.save(toBeSaved);
-    try (var executor = Executors.newSingleThreadExecutor()) {
-      executor.submit(() -> {
-        try {
-          var operations = new MetricsOperations(git,
-                  Path.of(utils.getLocalRepositoryPath() + git.getName()));
-          operations.openRepository();
-          metrics.setOwner(operations.getGitOwner());
-          gitRepository.save(toBeSaved);
-          metrics.setTotalCommits(operations.countCommits());
-          gitRepository.save(toBeSaved);
-          metrics.setTotalTags(operations.countTags());
-          gitRepository.save(toBeSaved);
-          metrics.setTotalBranches(operations.countBranches());
-          gitRepository.save(toBeSaved);
-          metrics.setLanguageAndFileCount(operations.countFilesForEachExtension());
-          gitRepository.save(toBeSaved);
-          metrics.setLanguageRatio(operations.languageRatio());
-          gitRepository.save(toBeSaved);
-          operations.closeRepository();
-        } catch (GitAPIException | IOException e) {
-          System.out.println("error :" + e);
-          gitRepository.delete(git);
-        }
-      });
-    }
+    var executor = Executors.newSingleThreadExecutor();
+    executor.submit(() -> {
+      try {
+        var operations = new MetricsOperations(git,
+                Path.of(utils.getLocalRepositoryPath() + git.getName()));
+        operations.openRepository();
+        metrics.setOwner(operations.getGitOwner());
+        gitRepository.save(toBeSaved);
+        metrics.setTotalCommits(operations.countCommits());
+        gitRepository.save(toBeSaved);
+        metrics.setTotalTags(operations.countTags());
+        gitRepository.save(toBeSaved);
+        metrics.setTotalBranches(operations.countBranches());
+        gitRepository.save(toBeSaved);
+        metrics.setLanguageAndFileCount(operations.countFilesForEachExtension());
+        gitRepository.save(toBeSaved);
+        metrics.setLanguageRatio(operations.languageRatio());
+        gitRepository.save(toBeSaved);
+        operations.closeRepository();
+      } catch (GitAPIException | IOException e) {
+        System.out.println("error :" + e);
+        gitRepository.delete(git);
+      }
+    });
     return true;
   }
 
