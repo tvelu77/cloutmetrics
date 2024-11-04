@@ -2,6 +2,7 @@ package io.tvelu77.cloutmetrics.metrics;
 
 import io.tvelu77.cloutmetrics.Utils;
 import io.tvelu77.cloutmetrics.git.Git;
+import io.tvelu77.cloutmetrics.utils.LanguageType;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,9 +23,9 @@ import org.eclipse.jgit.treewalk.TreeWalk;
  */
 public class MetricsOperations {
   
-  private Git git;
+  private final Git git;
   
-  private Path localPath;
+  private final Path localPath;
   
   private org.eclipse.jgit.api.Git jgit;
   
@@ -80,12 +81,12 @@ public class MetricsOperations {
   
   public Long countTags() throws GitAPIException {
     var tags = jgit.tagList().call();
-    return StreamSupport.stream(tags.spliterator(), false).count();
+    return (long) tags.size();
   }
   
   public Long countBranches() throws GitAPIException {
     var branches = jgit.branchList().call();
-    return StreamSupport.stream(branches.spliterator(), false).count();
+    return (long) branches.size();
   }
   
   /**
@@ -151,9 +152,9 @@ public class MetricsOperations {
         continue;
       }
       var extension = fileName.substring(index);
-      var language = "";
-      if ((language = Utils.EXTENSION.get(extension)) != null) {
-        map.merge(language, 1L, Long::sum);
+      var language = Utils.EXTENSION.get(extension);
+      if (language != null) {
+        map.merge(language.getName(), 1L, Long::sum);
       }
     }
     return map;
@@ -170,13 +171,13 @@ public class MetricsOperations {
         continue;
       }
       var extension = fileName.substring(index);
-      var language = "";
-      if ((language = Utils.EXTENSION.get(extension)) != null) {
+      var language = Utils.EXTENSION.get(extension);
+      if (language != null && language.getType() == LanguageType.PROGRAMMING) {
         var lineCount = 0L;
         try (var stream = Files.lines(Path.of(localPath + "/" + path), StandardCharsets.UTF_8)) {
-          lineCount = stream.count();
+          lineCount = stream.filter(s -> !s.trim().isEmpty()).count();
         }
-        map.merge(language, lineCount, Long::sum);
+        map.merge(language.getName(), lineCount, Long::sum);
       }
     }
     return averageOfMap(map);
