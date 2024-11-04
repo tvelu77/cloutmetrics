@@ -62,10 +62,10 @@ export class GitComponent {
       this.loading = false;
       const documentStyle = getComputedStyle(document.documentElement);
       const textColor = documentStyle.getPropertyValue('--text-color');
-      const data = Object.values(this.git.metrics?.languagesRatio!).map(value => Math.round(value));
+      const data = Object.values(this.git.metrics?.languageAndFileCount!);
       const colors = this.getColors(data.length);
       this.data = {
-        labels: Object.keys(this.git.metrics?.languagesRatio!),
+        labels: Object.keys(this.git.metrics?.languageAndFileCount!),
         datasets: [
           {
             label: 'Number of files',
