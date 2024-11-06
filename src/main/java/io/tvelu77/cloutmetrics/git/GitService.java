@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,21 +36,29 @@ public class GitService implements ApplicationService<Git> {
     var toBeSaved = new Git();
     toBeSaved.setName(git.getName());
     toBeSaved.setUrl(git.getUrl());
-    toBeSaved.setDate(LocalDateTime.now());
     var metrics = new Metrics();
     metrics.setTotalCommits(0L);
     toBeSaved.setMetrics(metrics);
+    toBeSaved.setStatus(GitStatus.IN_PROGRESS);
     gitRepository.save(toBeSaved);
     var executor = Executors.newSingleThreadExecutor();
     executor.submit(() -> {
       try {
         var operations = new MetricsOperations(git,
-            Path.of(utils.getLocalRepositoryPath() + git.getName()));
+                Path.of(utils.getLocalRepositoryPath() + git.getName()));
         operations.openRepository();
-        metrics.setTotalCommits(operations.countCommits());
-        toBeSaved.setMetrics(metrics);
+        metrics.setOwner(operations.getGitOwner());
         gitRepository.save(toBeSaved);
-        metrics.setLanguagesRatio(operations.languageRatio());
+        metrics.setTotalCommits(operations.countCommits());
+        gitRepository.save(toBeSaved);
+        metrics.setTotalTags(operations.countTags());
+        gitRepository.save(toBeSaved);
+        metrics.setTotalBranches(operations.countBranches());
+        gitRepository.save(toBeSaved);
+        metrics.setLanguageAndFileCount(operations.countFilesForEachExtension());
+        gitRepository.save(toBeSaved);
+        metrics.setLanguageRatio(operations.languageRatio());
+        toBeSaved.setStatus(GitStatus.FINISHED);
         gitRepository.save(toBeSaved);
         operations.closeRepository();
       } catch (GitAPIException | IOException e) {
@@ -67,9 +74,12 @@ public class GitService implements ApplicationService<Git> {
     Objects.requireNonNull(id);
     var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
     try {
-      deleteDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()));
-      gitRepository.delete(git);
-      return true;
+      if (git.getStatus() == GitStatus.FINISHED) {
+        deleteDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()));
+        gitRepository.delete(git);
+        return true;
+      }
+      return false;
     } catch (IOException e) {
       return false;
     }
@@ -81,11 +91,14 @@ public class GitService implements ApplicationService<Git> {
     Objects.requireNonNull(id);
     var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
     try {
-      renameDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()),
-          Path.of(utils.getLocalRepositoryPath() + newGit.getName()));
-      git.setName(newGit.getName());
-      gitRepository.save(git);
-      return true;
+      if (git.getStatus() == GitStatus.FINISHED) {
+        renameDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()),
+            Path.of(utils.getLocalRepositoryPath() + newGit.getName()));
+        git.setName(newGit.getName());
+        gitRepository.save(git);
+        return true;
+      }
+      return false;
     } catch (IOException e) {
       return false;
     }
