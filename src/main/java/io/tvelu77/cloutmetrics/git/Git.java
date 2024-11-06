@@ -29,11 +29,14 @@ public class Git {
   @Column(length = 256, nullable = false)
   private String name;
   
-  @Column(nullable = true)
-  private LocalDateTime date;
+  @Column(nullable = false)
+  private LocalDateTime date = LocalDateTime.now();
   
   @Column(nullable = false)
   private String url;
+
+  @Column(nullable = false)
+  private GitStatus status = GitStatus.UPLOADED;
   
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "metric_id", referencedColumnName = "id")
@@ -91,6 +94,14 @@ public class Git {
 
   public void setUrl(String url) {
     this.url = Objects.requireNonNull(url);
+  }
+
+  public GitStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(GitStatus status) {
+    this.status = Objects.requireNonNull(status);
   }
   
   public Metrics getMetrics() {

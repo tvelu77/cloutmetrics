@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,10 +36,10 @@ public class GitService implements ApplicationService<Git> {
     var toBeSaved = new Git();
     toBeSaved.setName(git.getName());
     toBeSaved.setUrl(git.getUrl());
-    toBeSaved.setDate(LocalDateTime.now());
     var metrics = new Metrics();
     metrics.setTotalCommits(0L);
     toBeSaved.setMetrics(metrics);
+    toBeSaved.setStatus(GitStatus.IN_PROGRESS);
     gitRepository.save(toBeSaved);
     var executor = Executors.newSingleThreadExecutor();
     executor.submit(() -> {
@@ -59,6 +58,7 @@ public class GitService implements ApplicationService<Git> {
         metrics.setLanguageAndFileCount(operations.countFilesForEachExtension());
         gitRepository.save(toBeSaved);
         metrics.setLanguageRatio(operations.languageRatio());
+        toBeSaved.setStatus(GitStatus.FINISHED);
         gitRepository.save(toBeSaved);
         operations.closeRepository();
       } catch (GitAPIException | IOException e) {
