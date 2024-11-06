@@ -19,7 +19,10 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
 /**
- * A class to define all the operations for a git.
+ * A class to define all the operations for a git.<br>
+ * For example, this class can compute trivial informations like 
+ * the number of tags or branches, 
+ * or more complex ones like the language ratio.
  */
 public class MetricsOperations {
   
@@ -29,13 +32,22 @@ public class MetricsOperations {
   
   private org.eclipse.jgit.api.Git jgit;
   
+  /**
+   * Constructor of the class.
+   *
+   * @param git {@link Git}
+   *        A model to represent a git repository in the database.
+   * @param localPath {@link Path}
+   *        The path to the git directory.
+   */
   public MetricsOperations(Git git, Path localPath) {
-    this.git = Objects.requireNonNull(git);
-    this.localPath = Objects.requireNonNull(localPath);
+    this.git = Objects.requireNonNull(git, "Git cannot be null");
+    this.localPath = Objects.requireNonNull(localPath, "localPath cannot be null");
   }
   
   /**
-   * Clones the git repository.
+   * Clones the git repository if it doesn't exist or tries to open 
+   * the git if the fikes are present.
    *
    * @throws IOException If the directory couldn't be created.
    * @throws InvalidRemoteException If the git URI wasn't correct.
@@ -62,7 +74,8 @@ public class MetricsOperations {
   }
   
   /**
-   * Simply closes the repository.
+   * Simply closes the repository.<br>
+   * See {@link org.eclipse.jgit.api.Git#close()}.
    */
   public void closeRepository() {
     jgit.close();
@@ -71,29 +84,48 @@ public class MetricsOperations {
   /**
    * Counts the commits done in a git repository.
    *
-   * @return Long, the number of commits done.
-   * @throws GitAPIException See NoHeadException.
+   * @return {@link Long}
+   *          The number of commits done.
+   * @throws GitAPIException If the git api expected a HEAD reference but doesn't exist.
    */
   public Long countCommits() throws GitAPIException {
     var commits = jgit.log().call();
     return StreamSupport.stream(commits.spliterator(), false).count();
   }
   
+  /**
+   * Counts the number of 
+   * <a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">tags</a> 
+   * in a git repository.
+   *
+   * @return {@link Long}
+   *          The number of tags.
+   * @throws GitAPIException If the git api expected a HEAD reference but doesn't exist.
+   */
   public Long countTags() throws GitAPIException {
     var tags = jgit.tagList().call();
-    return (long) tags.size();
+    return Long.valueOf(tags.size());
   }
   
+  /**
+   * Counts the number of 
+   * <a href="https://git-scm.com/docs/git-branch">branches</a> 
+   * in a git repository.
+   *
+   * @return Long, the number of tags.
+   * @throws GitAPIException If the git couldn't be opened.
+   */
   public Long countBranches() throws GitAPIException {
     var branches = jgit.branchList().call();
-    return (long) branches.size();
+    return Long.valueOf(branches.size());
   }
   
   /**
    * Fetches the owner information of the git repository.
    * If the user couldn't be found, the string is "Unknown".
    *
-   * @return A String with the name and email of the owner, Unknown otherwise.
+   * @return {@link String}
+   *          The name and email of the owner, Unknown otherwise.
    */
   public String getGitOwner() {
     var repository = jgit.getRepository();
@@ -108,7 +140,8 @@ public class MetricsOperations {
   /**
    * Counts the number of files for each extension.
    *
-   * @return Map with the language name and its number of files in a git.
+   * @return {@link Map}<{@link String}, {@link Long}>
+   *          The language name and its number of files in a git.
    * @throws IOException If the file couldn't be opened.
    */
   public Map<String, Long> countFilesForEachExtension() throws IOException {
@@ -126,7 +159,8 @@ public class MetricsOperations {
   /**
    * Computes the languages ratio in a git project.
    *
-   * @return A String:Float Map, where the string is the language and the float, the percentage.
+   * @return {@link Map}<{@link String}, {@link Double}>
+   *          The language and the average in percent.
    * @throws IOException If the file couldn't be opened.
    */
   public Map<String, Double> languageRatio() throws IOException {
@@ -141,6 +175,20 @@ public class MetricsOperations {
     }
   }
   
+  /**
+   * Counts the extension for each file in a git repository.<br>
+   * It will counts every known extension, so the extension used can be:<br>
+   * - From a programming language ;<br>
+   * - From a data language ;<br>
+   * - From a prose language ;<br>
+   * - Or, from a markup language.
+   *
+   * @param treeWalk {@link TreeWalk} 
+   *        Used for iterate through each file.
+   * @return {@link Map}<{@link String}, {@link Long}>
+   *          Containing a String (the language) key and a Long (number of files) value.
+   * @throws IOException If the file couldn't be opened.
+   */
   private Map<String, Long> countExtension(TreeWalk treeWalk) throws IOException {
     var map = new HashMap<String, Long>();
     treeWalk.setRecursive(true);
@@ -160,6 +208,16 @@ public class MetricsOperations {
     return map;
   }
   
+  /**
+   * Counts the number of non-empty lines in each file in a git repository.<br>
+   * However, for the counting, we use files with a programming language extension.
+   *
+   * @param treewalk {@link org.eclipse.jgit.treewalk.Treewalk}
+   *        Used for iterate through each file. 
+   * @return {@link java.util.Map} 
+   *          Contaning a String (the language) key and a Long (number of non-empty lines) value.
+   * @throws IOException If the file couldn't be opened.
+   */
   private Map<String, Double> countLines(TreeWalk treeWalk) throws IOException {
     var map = new HashMap<String, Long>();
     treeWalk.setRecursive(true);
@@ -183,6 +241,15 @@ public class MetricsOperations {
     return averageOfMap(map);
   }
   
+  /**
+   * Compute the average of each key in a map.<br>
+   * Here, the average is computed with the sum of all values.
+   *
+   * @param map {@link java.util.Map} 
+   *        Containing a String (the language) key and a Long value.
+   * @return {@link java.util.Map} 
+   *          Contaning a String (the language) key and a Long (its average) value.
+   */
   private Map<String, Double> averageOfMap(Map<String, Long> map) {
     var finalMap = new HashMap<String, Double>();
     var totalLines = map.values().stream().mapToDouble(Double::valueOf).sum();
