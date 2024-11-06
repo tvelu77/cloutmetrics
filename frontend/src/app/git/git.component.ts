@@ -12,6 +12,7 @@ import { ToastModule } from 'primeng/toast';
 import { ChartModule } from 'primeng/chart';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-git',
@@ -28,7 +29,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NgFor,
     KeyValuePipe,
     SkeletonModule,
-    ProgressSpinnerModule],
+    ProgressSpinnerModule,
+    DialogModule],
   templateUrl: './git.component.html',
   styleUrl: './git.component.scss',
   providers: [MessageService]
@@ -45,6 +47,7 @@ export class GitComponent {
   deleteForm = new FormGroup({});
   data!: any;
   options!: any;
+  visible = false;
   constructor(private readonly route: ActivatedRoute,
     private readonly gitService: GitService,
     private readonly router: Router,
