@@ -28,9 +28,9 @@
             @defer (when !loading) {
                 @if (git.status?.valueOf() === "FINISHED") {
                     <div class="flex justify-content-center flex-wrap p-3">
-                        <p-tag [value]="git.metrics?.totalCommits?.toString() + ' commits'" styleClass="m-2" />
-                        <p-tag [value]="git.metrics?.totalBranches?.toString() + ' branches'" styleClass="m-2" />
-                        <p-tag [value]="git.metrics?.totalTags?.toString() + ' tags'" styleClass="m-2" />
+                        <p-tag icon="pi pi-hashtag" [value]="git.metrics?.totalCommits?.toString() + ' commits'" styleClass="m-2" />
+                        <p-tag icon="pi pi-sitemap" [value]="git.metrics?.totalBranches?.toString() + ' branches'" styleClass="m-2" />
+                        <p-tag icon="pi pi-tag" [value]="git.metrics?.totalTags?.toString() + ' tags'" styleClass="m-2" />
                         <p-tag icon="pi pi-user" [value]="git.metrics?.owner" styleClass="m-2" />
                     </div>
                     <p-chart type="bar" [data]="data" [options]="options"/>
@@ -50,16 +50,21 @@
             @if (git.status?.valueOf() === "FINISHED" && !loading) {
                 <form [formGroup]="renameForm" (ngSubmit)="rename()">
                     <p class="text-4xl text-center">Rename</p>
-                    <input 
-                    pInputText 
-                    id="name" 
-                    aria-describedby="name-help" 
-                    formControlName="name" />
-                    <button pButton type="submit" label="Submit" [disabled]="renameForm.invalid"></button>
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <input 
+                        pInputText 
+                        id="name" 
+                        aria-describedby="name-help" 
+                        formControlName="name" />
+                        <button pButton type="submit" label="Submit" [disabled]="renameForm.invalid">
+                        </button>
+                    </div>
                 </form>
                 <form [formGroup]="deleteForm" (ngSubmit)="delete()">
                     <p class="text-4xl text-center">Delete</p>
-                    <button pButton type="submit" label="Delete"></button>
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <button pButton type="submit" label="Delete" severity="danger"></button>
+                    </div>
                 </form>
             } @else {
                 <div class="flex justify-content-center flex-wrap p-3">
