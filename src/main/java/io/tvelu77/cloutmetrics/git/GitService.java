@@ -74,9 +74,12 @@ public class GitService implements ApplicationService<Git> {
     Objects.requireNonNull(id);
     var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
     try {
-      deleteDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()));
-      gitRepository.delete(git);
-      return true;
+      if (git.getStatus() == GitStatus.FINISHED) {
+        deleteDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()));
+        gitRepository.delete(git);
+        return true;
+      }
+      return false;
     } catch (IOException e) {
       return false;
     }
@@ -88,11 +91,14 @@ public class GitService implements ApplicationService<Git> {
     Objects.requireNonNull(id);
     var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
     try {
-      renameDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()),
-          Path.of(utils.getLocalRepositoryPath() + newGit.getName()));
-      git.setName(newGit.getName());
-      gitRepository.save(git);
-      return true;
+      if (git.getStatus() == GitStatus.FINISHED) {
+        renameDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()),
+            Path.of(utils.getLocalRepositoryPath() + newGit.getName()));
+        git.setName(newGit.getName());
+        gitRepository.save(git);
+        return true;
+      }
+      return false;
     } catch (IOException e) {
       return false;
     }
