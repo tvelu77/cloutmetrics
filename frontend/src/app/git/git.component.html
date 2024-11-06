@@ -2,31 +2,71 @@
     <p-toast position="bottom-right" />
     <p-tabView (onChange)="handleChange($event)">
         <p-tabPanel header="Overview" leftIcon="pi pi-eye" [selected]="true">
-            <div class="p-3 font-bold">
-                <p class="text-4xl text-center">{{ git.name }}</p>
-                <p class="text-xl text-justify">Last modification : {{ git.date|date: 'dd-MM-yyyy HH:mm:ss' }}</p>
-                <p class="text-xl text-justify">URL : <a [href]="git.url">{{ git.url }}</a></p>
-            </div>
+            @defer (when !loading) {
+                <div class="p-3 font-bold">
+                    <p class="text-4xl text-center">{{ git.name }}</p>
+                    <p class="text-xl text-justify">Last modification : {{ git.date|date: 'dd-MM-yyyy HH:mm:ss' }}</p>
+                    <p class="text-xl text-justify">URL : <a [href]="git.url">{{ git.url }}</a></p>
+                </div>
+            } @placeholder (minimum 500ms) {
+                <div class="p-3">
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <p-skeleton width="10rem" height="2rem" styleClass="flex align-items-center justify-content-center" />
+                    </div>
+                    <div class="flex flex-wrap p-3">
+                        <p-skeleton width="12rem" height="2rem" styleClass="flex align-items-center justify-content-center" />
+                        <p-skeleton width="15rem" height="2rem" styleClass="ml-2 flex align-items-center justify-content-center" />
+                    </div>
+                    <div class="flex flex-wrap p-3">
+                        <p-skeleton width="3rem" height="2rem" styleClass="flex align-items-center justify-content-center" />
+                        <p-skeleton width="50rem" height="2rem" styleClass="ml-2 flex align-items-center justify-content-center" />
+                    </div>
+                </div>
+            }
         </p-tabPanel>
         <p-tabPanel header="Metrics" leftIcon="pi pi-chart-pie">
-            <p-tag [value]="git.metrics?.totalCommits?.toString() + ' commits'" />
-            <p-chart type="bar" [data]="data" [options]="options"/>
+            @defer (when !loading) {
+                @if (git.status?.valueOf() === "FINISHED") {
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <p-tag [value]="git.metrics?.totalCommits?.toString() + ' commits'" styleClass="m-2" />
+                        <p-tag [value]="git.metrics?.totalBranches?.toString() + ' branches'" styleClass="m-2" />
+                        <p-tag [value]="git.metrics?.totalTags?.toString() + ' tags'" styleClass="m-2" />
+                        <p-tag icon="pi pi-user" [value]="git.metrics?.owner" styleClass="m-2" />
+                    </div>
+                    <p-chart type="bar" [data]="data" [options]="options"/>
+                } @else {
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <p-progressSpinner ariaLabel="loading" />
+                        <p class="text-4xl text-center p-3">Come back later, the metrics are being computed !</p>
+                    </div>
+                }
+            } @placeholder (minimum 500ms) {
+                <div class="flex justify-content-center flex-wrap p-3">
+                    <p-progressSpinner ariaLabel="loading" />
+                </div>
+            }
         </p-tabPanel>
         <p-tabPanel header="Manage" leftIcon="pi pi-cog">
-            <form [formGroup]="renameForm" (ngSubmit)="rename()">
-                <p class="text-4xl text-center">Rename</p>
-                <input 
-                pInputText 
-                id="name" 
-                aria-describedby="name-help" 
-                formControlName="name" />
-                <button pButton type="submit" label="Submit" [disabled]="renameForm.invalid"></button>
-            </form>
-            <form [formGroup]="deleteForm" (ngSubmit)="delete()">
-                <p class="text-4xl text-center">Delete</p>
-                <button pButton type="submit" label="Delete"></button>
-            </form>
-            <p class="text-4xl text-center">Delete</p>
+            @if (git.status?.valueOf() === "FINISHED" && !loading) {
+                <form [formGroup]="renameForm" (ngSubmit)="rename()">
+                    <p class="text-4xl text-center">Rename</p>
+                    <input 
+                    pInputText 
+                    id="name" 
+                    aria-describedby="name-help" 
+                    formControlName="name" />
+                    <button pButton type="submit" label="Submit" [disabled]="renameForm.invalid"></button>
+                </form>
+                <form [formGroup]="deleteForm" (ngSubmit)="delete()">
+                    <p class="text-4xl text-center">Delete</p>
+                    <button pButton type="submit" label="Delete"></button>
+                </form>
+            } @else {
+                <div class="flex justify-content-center flex-wrap p-3">
+                    <p-progressSpinner ariaLabel="loading" />
+                    <p class="text-4xl text-center p-3">Come back later, the metrics are being computed !</p>
+                </div>
+            }
         </p-tabPanel>
         <p-tabPanel header="Go back to main page" leftIcon="pi pi-undo">
         </p-tabPanel>
