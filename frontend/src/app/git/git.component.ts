@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { Git } from './git';
+import { Git, GitStatus } from './git';
 import { GitService } from './git.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
@@ -10,17 +10,32 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { ChartModule } from 'primeng/chart';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-git',
   standalone: true,
-  imports: [TabViewModule, DatePipe, TagModule, RouterLink, RouterLinkActive, ReactiveFormsModule, ButtonModule, ToastModule, ChartModule, NgFor, KeyValuePipe],
+  imports: [TabViewModule,
+    DatePipe,
+    TagModule,
+    RouterLink,
+    RouterLinkActive,
+    ReactiveFormsModule,
+    ButtonModule,
+    ToastModule,
+    ChartModule,
+    NgFor,
+    KeyValuePipe,
+    SkeletonModule,
+    ProgressSpinnerModule],
   templateUrl: './git.component.html',
   styleUrl: './git.component.scss',
   providers: [MessageService]
 })
 export class GitComponent {
   git!: Git;
+  gitStatus = GitStatus;
   loading = true;
   items!: MenuItem[];
   activeItem!: MenuItem;
@@ -60,8 +75,6 @@ export class GitComponent {
     this.gitService.findById(+id).subscribe((response) => {
       this.git = response;
       this.loading = false;
-      const documentStyle = getComputedStyle(document.documentElement);
-      const textColor = documentStyle.getPropertyValue('--text-color');
       const data = Object.values(this.git.metrics?.languageAndFileCount!);
       const colors = this.getColors(data.length);
       this.data = {
