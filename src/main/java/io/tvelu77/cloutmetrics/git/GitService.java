@@ -74,7 +74,7 @@ public class GitService implements ApplicationService<Git> {
     Objects.requireNonNull(id);
     var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
     try {
-      if (git.getStatus() == GitStatus.FINISHED) {
+      if (git.getStatus() == GitStatus.FINISHED || git.getStatus() == GitStatus.ERROR) {
         deleteDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()));
         gitRepository.delete(git);
         return true;
