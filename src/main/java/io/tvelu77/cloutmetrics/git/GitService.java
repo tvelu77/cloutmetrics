@@ -62,8 +62,8 @@ public class GitService implements ApplicationService<Git> {
         gitRepository.save(toBeSaved);
         operations.closeRepository();
       } catch (GitAPIException | IOException e) {
-        System.out.println("error :" + e);
-        gitRepository.delete(git);
+        toBeSaved.setStatus(GitStatus.ERROR);
+        gitRepository.save(toBeSaved);
       }
     });
     return true;
