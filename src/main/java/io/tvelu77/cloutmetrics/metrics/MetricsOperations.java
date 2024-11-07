@@ -61,7 +61,7 @@ public class MetricsOperations {
     if (Files.exists(localPath)) {
       var builder = new FileRepositoryBuilder();
       jgit =  org.eclipse.jgit.api.Git.wrap(
-          builder.setGitDir(localPath.toFile())
+          builder.setGitDir(Path.of(localPath + "\\.git").toFile())
           .readEnvironment()
           .findGitDir()
           .build());
@@ -78,6 +78,7 @@ public class MetricsOperations {
    * See {@link org.eclipse.jgit.api.Git#close()}.
    */
   public void closeRepository() {
+    jgit.getRepository().close();
     jgit.close();
   }
   
