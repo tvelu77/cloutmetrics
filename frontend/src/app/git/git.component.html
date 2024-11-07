@@ -26,7 +26,7 @@
         </p-tabPanel>
         <p-tabPanel header="Metrics" leftIcon="pi pi-chart-pie">
             @defer (when !loading) {
-                @if (git.status?.valueOf() === "FINISHED") {
+                @if (git.status === gitStatus.FINISHED) {
                     <div class="flex justify-content-center flex-wrap p-3">
                         <p-tag icon="pi pi-hashtag" [value]="git.metrics?.totalCommits?.toString() + ' commits'" styleClass="m-2" />
                         <p-tag icon="pi pi-sitemap" [value]="git.metrics?.totalBranches?.toString() + ' branches'" styleClass="m-2" />
@@ -34,6 +34,10 @@
                         <p-tag icon="pi pi-user" [value]="git.metrics?.owner" styleClass="m-2" />
                     </div>
                     <p-chart type="bar" [data]="data" [options]="options"/>
+                } @else if (git.status === gitStatus.ERROR) {
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <p class="text-4xl text-center p-3">An error has occured, please restart or delete this entry !</p>
+                    </div>
                 } @else {
                     <div class="flex justify-content-center flex-wrap p-3">
                         <p-progressSpinner ariaLabel="loading" />
@@ -47,7 +51,7 @@
             }
         </p-tabPanel>
         <p-tabPanel header="Manage" leftIcon="pi pi-cog">
-            @if (git.status?.valueOf() === "FINISHED" && !loading) {
+            @if ((git.status === gitStatus.FINISHED || git.status === gitStatus.ERROR) && !loading) {
                 <form [formGroup]="renameForm" (ngSubmit)="rename()">
                     <p class="text-4xl text-center">Rename</p>
                     <div class="flex justify-content-center flex-wrap p-3">
