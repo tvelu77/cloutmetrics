@@ -10,8 +10,8 @@ export interface Git {
 }
 
 export enum GitStatus {
-    UPLOADED = "The URL has been uploaded",
-    IN_PROGESS = "Metrics are being computed, please wait",
-    ERROR = "Metrics couldn't be computed",
-    FINISHED = "Metrics computed",
+    UPLOADED = "UPLOADED",
+    IN_PROGESS = "IN_PROGRESS",
+    ERROR = "ERROR",
+    FINISHED = "FINISHED",
 }
