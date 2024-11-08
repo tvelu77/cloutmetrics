@@ -14,6 +14,9 @@
             <th id="date" pSortableColumn="date" style="width:20%">
                 Date <p-sortIcon field="date" />
             </th>
+            <th id="status" pSortableColumn="status" style="width:20%">
+                Status <p-sortIcon field="status" />
+            </th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-git>
@@ -22,6 +25,7 @@
             <td>{{ git.name }}</td>
             <td>{{ git.url }}</td>
             <td>{{ git.date|date: 'dd-MM-yyyy HH:mm:ss' }}</td>
+            <td><p-tag [value]="git.status" [severity]="getSeverity(git.status)" /></td>
         </tr>
     </ng-template>
 </p-table>

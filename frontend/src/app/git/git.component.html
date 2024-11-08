@@ -26,7 +26,7 @@
         </p-tabPanel>
         <p-tabPanel header="Metrics" leftIcon="pi pi-chart-pie">
             @defer (when !loading) {
-                @if (git.status?.valueOf() === "FINISHED") {
+                @if (git.status === gitStatus.FINISHED) {
                     <div class="flex justify-content-center flex-wrap p-3">
                         <p-tag icon="pi pi-hashtag" [value]="git.metrics?.totalCommits?.toString() + ' commits'" styleClass="m-2" />
                         <p-tag icon="pi pi-sitemap" [value]="git.metrics?.totalBranches?.toString() + ' branches'" styleClass="m-2" />
@@ -34,6 +34,10 @@
                         <p-tag icon="pi pi-user" [value]="git.metrics?.owner" styleClass="m-2" />
                     </div>
                     <p-chart type="bar" [data]="data" [options]="options"/>
+                } @else if (git.status === gitStatus.ERROR) {
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <p class="text-4xl text-center p-3">An error has occured, please restart or delete this entry !</p>
+                    </div>
                 } @else {
                     <div class="flex justify-content-center flex-wrap p-3">
                         <p-progressSpinner ariaLabel="loading" />
@@ -47,7 +51,7 @@
             }
         </p-tabPanel>
         <p-tabPanel header="Manage" leftIcon="pi pi-cog">
-            @if (git.status?.valueOf() === "FINISHED" && !loading) {
+            @if (!loading && (git.status === gitStatus.FINISHED || git.status === gitStatus.ERROR)) {
                 <form [formGroup]="renameForm" (ngSubmit)="rename()">
                     <p class="text-4xl text-center">Rename</p>
                     <div class="flex justify-content-center flex-wrap p-3">
@@ -63,7 +67,13 @@
                 <form [formGroup]="deleteForm" (ngSubmit)="delete()">
                     <p class="text-4xl text-center">Delete</p>
                     <div class="flex justify-content-center flex-wrap p-3">
-                        <button pButton type="submit" label="Delete" severity="danger"></button>
+                        <p-button label="Delete" severity="danger" (onClick)="visible = true" />
+                        <p-dialog header="Confirm delete" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+                            <div class="flex justify-content-end gap-2">
+                                <p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
+                                <p-button label="Confirm" severity="danger" (onClick)="visible = false" type="submit" />
+                            </div>
+                        </p-dialog>
                     </div>
                 </form>
             } @else {
