@@ -63,7 +63,7 @@ public class GitController {
   public ResponseEntity<Git> add(@RequestBody Git git) {
     Objects.requireNonNull(git);
     if (gitService.add(git)) {
-      return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(git, HttpStatus.CREATED);
     }
     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
