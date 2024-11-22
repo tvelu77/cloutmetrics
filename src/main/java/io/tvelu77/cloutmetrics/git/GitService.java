@@ -111,7 +111,7 @@ public class GitService implements ApplicationService<Git> {
 
   @Override
   public Git findById(Long id) {
-    return gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
+    return gitRepository.findById(id).orElseThrow(NoSuchElementException::new);
   }
   
   private void deleteDirectory(Path directory) throws IOException {
