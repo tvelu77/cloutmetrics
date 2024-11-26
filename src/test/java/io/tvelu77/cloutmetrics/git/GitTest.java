@@ -21,61 +21,32 @@ public class GitTest {
   }
 
   @Test
-  public void nonDefaultConstructorShouldNotThrow() {
-    assertDoesNotThrow(() -> new Git(5L, "clout", "https://localhost:8080", new Metrics()));
+  public void constructorShouldNotThrow() {
+    assertDoesNotThrow(() -> new Git(5L, "clout", "https://localhost:8080"));
   }
 
   @Test
-  public void nonDefaultConstructorShouldThrowIfIdIsNegative() {
+  public void constructorShouldThrowIfIdIsNegative() {
     assertThrows(IllegalArgumentException.class,
-            () -> new Git(-1L, "clout", "https://localhost:8080", new Metrics()));
+            () -> new Git(-1L, "clout", "https://localhost:8080"));
   }
 
   @Test
-  public void nonDefaultConstructorShouldThrowIfIdIsNull() {
+  public void constructorShouldThrowIfIdIsNull() {
     assertThrows(NullPointerException.class,
-            () -> new Git(null, "clout", "https://localhost:8080", new Metrics()));
+            () -> new Git(null, "clout", "https://localhost:8080"));
   }
 
   @Test
-  public void nonDefaultConstructorShouldThrowIfNameIsNull() {
+  public void constructorShouldThrowIfNameIsNull() {
     assertThrows(NullPointerException.class,
-            () -> new Git(1L, null, "https://localhost:8080", new Metrics()));
+            () -> new Git(1L, null, "https://localhost:8080"));
   }
 
   @Test
-  public void nonDefaultConstructorShouldThrowIfUrlIsNull() {
+  public void constructorShouldThrowIfUrlIsNull() {
     assertThrows(NullPointerException.class,
-            () -> new Git(1L, "clout", null, new Metrics()));
-  }
-
-  @Test
-  public void nonDefaultConstructorShouldThrowIfMetricsIsNull() {
-    assertThrows(NullPointerException.class,
-            () -> new Git(1L, "clout", "https://localhost:8080", null));
-  }
-
-  @Test
-  public void dateConstructorShouldNotThrow() {
-    assertDoesNotThrow(
-            () -> new Git(5L, "clout", "https://localhost:8080", new Metrics(), LocalDateTime.now()));
-  }
-
-  @Test
-  public void statusConstructorShouldNotThrow() {
-    assertDoesNotThrow(
-            () -> new Git(5L, "clout", "https://localhost:8080", new Metrics(), GitStatus.FINISHED));
-  }
-
-  @Test
-  public void dateAndStatusConstructorShouldNotThrow() {
-    assertDoesNotThrow(
-            () -> new Git(5L,
-                    "clout",
-                    "https://localhost:8080",
-                    new Metrics(),
-                    LocalDateTime.now(),
-                    GitStatus.FINISHED));
+            () -> new Git(1L, "clout", null));
   }
   
   @Test
