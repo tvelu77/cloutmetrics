@@ -40,12 +40,12 @@ public class Git {
   
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "metric_id", referencedColumnName = "id")
-  private Metrics metrics;
+  private Metrics metrics = new Metrics();
   
   /**
    * Git's empty constructor.<br>
    * Mainly used by JPA.<br>
-   * You should see {@link Git#Git(Long, String, String, Metrics)}.
+   * You should see {@link Git#Git(Long, String, String)}.
    */
   public Git() {}
 
@@ -60,74 +60,15 @@ public class Git {
    * @param id {@link Long}, a long object representing an unique ID.
    * @param name {@link String}, a String representing the name.
    * @param url {@link String}, a String representing the url for the git.
-   * @param metrics {@link Metrics}, an object representing a git's metrics.
    */
-  public Git(Long id, String name, String url, Metrics metrics) {
+  public Git(Long id, String name, String url) {
+    Objects.requireNonNull(id, "Git's id cannot be null !");
     if (id < 1L) {
       throw new IllegalArgumentException("Git's id should not be less or equal to 0 !");
     }
-    this.id = Objects.requireNonNull(id, "Git's id cannot be null !");
+    this.id = id;
     this.name = Objects.requireNonNull(name, "Git's name cannot be null !");
     this.url = Objects.requireNonNull(url, "Git's url cannot be null !");
-    this.metrics = Objects.requireNonNull(metrics, "Git's metrics cannot be null");
-  }
-
-  /**
-   * Git's constructor.<br>
-   * To be used if you want to define the date by yourself.
-   * However, the date cannot be after the current date.<br>
-   *
-   * @param id {@link Long}, a long object representing an unique ID.
-   * @param name {@link String}, a String representing the name.
-   * @param url {@link String}, a String representing the url for the git.
-   * @param metrics {@link Metrics}, an object representing a git's metrics.
-   * @param date
-   *        {@link LocalDateTime}, a datetime representing the date when the git was uploaded.
-   */
-  public Git(Long id, String name, String url, Metrics metrics, LocalDateTime date) {
-    this(id, name, url, metrics);
-    if (date.isAfter(LocalDateTime.now())) {
-      throw new IllegalArgumentException("Git's datetime cannot be after current datetime !");
-    }
-    this.date = Objects.requireNonNull(date, "Git's date cannot be null !");
-  }
-
-  /**
-   * Git's constructor.<br>
-   * To be used if you want to define the status by yourself.
-   *
-   * @param id {@link Long}, a long object representing an unique ID.
-   * @param name {@link String}, a String representing the name.
-   * @param url {@link String}, a String representing the url for the git.
-   * @param metrics {@link Metrics}, an object representing a git's metrics.
-   * @param status {@link GitStatus}, an enum representing the current state.
-   */
-  public Git(Long id, String name, String url, Metrics metrics, GitStatus status) {
-    this(id, name, url, metrics);
-    this.status = Objects.requireNonNull(status, "Git's status cannot be null");
-  }
-
-  /**
-   * Git's constructor.<br>
-   * To be used if you want to define the status and the date by yourself.
-   * However, the date should be inferior to the current date.
-   *
-   * @param id {@link Long}, a long object representing an unique ID.
-   * @param name {@link String}, a String representing the name.
-   * @param url {@link String}, a String representing the url for the git.
-   * @param metrics {@link Metrics}, an object representing a git's metrics.
-   * @param date
-   *        {@link LocalDateTime}, a datetime representing the date when the git was uploaded.
-   * @param status {@link GitStatus}, an enum representing the current state.
-   */
-  public Git(Long id,
-             String name,
-             String url,
-             Metrics metrics,
-             LocalDateTime date,
-             GitStatus status) {
-    this(id, name, url, metrics, date);
-    this.status = Objects.requireNonNull(status, "Git's status cannot be null");
   }
   
   public Long getId() {
