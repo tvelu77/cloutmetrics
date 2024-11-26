@@ -81,8 +81,10 @@ public class GitController {
   public ResponseEntity<Git> remove(@PathVariable Long id) {
     Objects.requireNonNull(id);
     try {
-      gitService.delete(id);
-      return new ResponseEntity<>(HttpStatus.OK);
+      if (gitService.delete(id)) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     } catch (NoSuchElementException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -104,7 +106,7 @@ public class GitController {
     Objects.requireNonNull(newGit);
     try {
       gitService.update(newGit, id);
-      return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (NoSuchElementException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
