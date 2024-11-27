@@ -81,7 +81,7 @@ public class GitService implements ApplicationService<Git> {
   public boolean update(Git newGit, Long id) {
     Objects.requireNonNull(newGit);
     Objects.requireNonNull(id);
-    var git = gitRepository.findById(id).orElseThrow(() -> new NoSuchElementException());
+    var git = gitRepository.findById(id).orElseThrow(NoSuchElementException::new);
     try {
       if (git.getStatus() != GitStatus.IN_PROGRESS) {
         renameDirectory(Path.of(utils.getLocalRepositoryPath() + git.getName()),
