@@ -2,6 +2,7 @@ package io.tvelu77.cloutmetrics.git;
 
 import io.tvelu77.cloutmetrics.ApplicationService;
 import io.tvelu77.cloutmetrics.Utils;
+import io.tvelu77.cloutmetrics.metrics.MetricsOperations;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,31 +34,6 @@ public class GitService implements ApplicationService<Git> {
     // TODO : DTO should be used here !
     Objects.requireNonNull(git);
     gitRepository.save(git);
-    // var executor = Executors.newSingleThreadExecutor();
-    // executor.submit(() -> {
-    // try {
-    // var operations = new MetricsOperations(git,
-    // Path.of(utils.getLocalRepositoryPath() + git.getName()));
-    // operations.openRepository();
-    // metrics.setOwner(operations.getGitOwner());
-    // gitRepository.save(toBeSaved);
-    // metrics.setTotalCommits(operations.countCommits());
-    // gitRepository.save(toBeSaved);
-    // metrics.setTotalTags(operations.countTags());
-    // gitRepository.save(toBeSaved);
-    // metrics.setTotalBranches(operations.countBranches());
-    // gitRepository.save(toBeSaved);
-    // metrics.setLanguageAndFileCount(operations.countFilesForEachExtension());
-    // gitRepository.save(toBeSaved);
-    // metrics.setLanguageRatio(operations.languageRatio());
-    // toBeSaved.setStatus(GitStatus.FINISHED);
-    // gitRepository.save(toBeSaved);
-    // operations.closeRepository();
-    // } catch (GitAPIException | IOException e) {
-    // toBeSaved.setStatus(GitStatus.ERROR);
-    // gitRepository.save(toBeSaved);
-    // }
-    // });
     return true;
   }
 
@@ -69,10 +47,8 @@ public class GitService implements ApplicationService<Git> {
         gitRepository.delete(git);
         return true;
       }
-      System.out.println("HELLO");
       return false;
     } catch (IOException e) {
-      System.out.println("HELLO BUG");
       return false;
     }
   }
@@ -94,6 +70,26 @@ public class GitService implements ApplicationService<Git> {
     } catch (IOException e) {
       return false;
     }
+  }
+  
+  /**
+   * Updates the git associated with the given id
+   * by computing its metrics.
+   *
+   * @param id {@link Long}, the git's id.
+   * @return True if the update has been successful or 
+   */
+  public boolean update(Long id) {
+    Objects.requireNonNull(id, "Id should not be null !");
+    var git = gitRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    if (git.getStatus() != GitStatus.IN_PROGRESS) {
+      git.setStatus(GitStatus.IN_PROGRESS);
+      gitRepository.save(git);
+      var executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> compute(git));
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -128,5 +124,25 @@ public class GitService implements ApplicationService<Git> {
       }
     }
   }
-
+  
+  private void compute(Git git) {
+    try {
+      var operations = new MetricsOperations(git,
+          Path.of(utils.getLocalRepositoryPath() + git.getName()));
+      var metrics = git.getMetrics();
+      operations.openRepository();
+      metrics.setOwner(operations.getGitOwner());
+      metrics.setTotalCommits(operations.countCommits());
+      metrics.setTotalTags(operations.countTags());
+      metrics.setTotalBranches(operations.countBranches());
+      metrics.setLanguageAndFileCount(operations.countFilesForEachExtension());
+      metrics.setLanguageRatio(operations.languageRatio());
+      git.setStatus(GitStatus.FINISHED);
+      operations.closeRepository();
+    } catch (GitAPIException | IOException e) {
+      git.setStatus(GitStatus.ERROR);
+    } finally {
+      gitRepository.save(git);
+    }
+  }
 }

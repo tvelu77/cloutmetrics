@@ -113,4 +113,25 @@ public class GitController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+  
+  /**
+   * Updates the git linked to the id by computing the metrics.
+   *
+   * @param id Long, the git's id to be computed.
+   * @return A response :<br>
+   *     - 200 if it was successful ;<br>
+   *     - 404 if it wasn't successful.
+   */
+  @PutMapping("/{id}/compute")
+  public ResponseEntity<Git> update(@PathVariable Long id) {
+    Objects.requireNonNull(id);
+    try {
+      if (gitService.update(id)) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    } catch (NoSuchElementException e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
 }
