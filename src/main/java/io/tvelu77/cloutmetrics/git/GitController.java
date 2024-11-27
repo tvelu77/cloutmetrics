@@ -63,7 +63,7 @@ public class GitController {
   public ResponseEntity<Git> add(@RequestBody Git git) {
     Objects.requireNonNull(git);
     if (gitService.add(git)) {
-      return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(git, HttpStatus.CREATED);
     }
     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
@@ -81,8 +81,10 @@ public class GitController {
   public ResponseEntity<Git> remove(@PathVariable Long id) {
     Objects.requireNonNull(id);
     try {
-      gitService.delete(id);
-      return new ResponseEntity<>(HttpStatus.OK);
+      if (gitService.delete(id)) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     } catch (NoSuchElementException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -103,8 +105,10 @@ public class GitController {
     Objects.requireNonNull(id);
     Objects.requireNonNull(newGit);
     try {
-      gitService.update(newGit, id);
-      return new ResponseEntity<>(HttpStatus.OK);
+      if (gitService.update(newGit, id)) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     } catch (NoSuchElementException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

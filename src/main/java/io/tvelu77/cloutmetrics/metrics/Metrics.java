@@ -27,16 +27,16 @@ public class Metrics {
   private Long id;
   
   @Column
-  private Long totalCommits;
+  private Long totalCommits = 0L;
 
   @Column
-  private Long totalTags;
+  private Long totalTags = 0L;
 
   @Column
-  private Long totalBranches;
+  private Long totalBranches = 0L;
   
   @Column
-  private String owner;
+  private String owner = "UNKNOWN";
 
   @ElementCollection
   @MapKeyColumn(name = "language")

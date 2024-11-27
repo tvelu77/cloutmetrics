@@ -9,6 +9,6 @@
     <file-match-pattern match-pattern="^src/main/java/.*\.java" include-pattern="true"/>
     <file-match-pattern match-pattern="^src/main/resources/.*\.properties" include-pattern="true"/>
     <file-match-pattern match-pattern="^src/main/resources/.*\.properties" include-pattern="true"/>
-    <file-match-pattern match-pattern="^src/test/resources.*\.properties" include-pattern="true"/>
+    <file-match-pattern match-pattern="^src/test/resources/.*\.properties" include-pattern="true"/>
   </fileset>
 </fileset-config>
