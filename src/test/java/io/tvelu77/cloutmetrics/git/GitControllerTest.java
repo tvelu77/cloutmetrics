@@ -88,6 +88,11 @@ public class GitControllerTest {
   }
 
   @Test
+  public void shouldReturn404AfterDeleteIfBadId() throws Exception {
+    mvc.perform(delete("/gits/100")).andExpect(status().isNotFound());
+  }
+
+  @Test
   public void shouldReturn401AfterDeleteIfGitIsInProgress() throws Exception {
     var git = new Git(1L, "clout", "localhost");
     git.setStatus(GitStatus.IN_PROGRESS);
@@ -121,6 +126,25 @@ public class GitControllerTest {
             .andExpect(status().isNotFound());
   }
 
+  @Test
+  public void shouldReturn401AfterPutIfGitIsInProgress() throws Exception {
+    var git = new Git(1L, "clout", "localhost");
+    git.setStatus(GitStatus.IN_PROGRESS);
+    mvc.perform(post("/gits").contentType(MediaType.APPLICATION_JSON).content(toJson(git)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("name", CoreMatchers.is(git.getName())));
+    git.setName("hello");
+    mvc.perform(put("/gits/1").contentType(MediaType.APPLICATION_JSON).content(toJson(git)))
+            .andExpect(status().isUnauthorized());
+  }
+
+  /**
+   * Converts an Object to a byte array formatted as a JSON.
+   *
+   * @param object In this case, it will be entities defined in this project.
+   * @return byte[], a JSON represented by a byte array.
+   * @throws IOException If the byte array couldn't be created.
+   */
   private static byte[] toJson(Object object) throws IOException {
     var mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
