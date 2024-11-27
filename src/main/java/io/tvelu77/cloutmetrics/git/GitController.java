@@ -105,8 +105,10 @@ public class GitController {
     Objects.requireNonNull(id);
     Objects.requireNonNull(newGit);
     try {
-      gitService.update(newGit, id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      if (gitService.update(newGit, id)) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     } catch (NoSuchElementException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
