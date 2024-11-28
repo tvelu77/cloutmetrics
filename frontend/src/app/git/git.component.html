@@ -60,7 +60,7 @@
             }
         </p-tabPanel>
         <p-tabPanel header="Manage" leftIcon="pi pi-cog">
-            @if (!loading && (git.status === gitStatus.FINISHED || git.status === gitStatus.ERROR)) {
+            @if (!loading && git.status !== gitStatus.IN_PROGESS ) {
                 <form [formGroup]="renameForm" (ngSubmit)="rename()">
                     <p class="text-4xl text-center">Rename</p>
                     <div class="flex justify-content-center flex-wrap p-3">
