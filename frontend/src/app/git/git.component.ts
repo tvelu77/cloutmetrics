@@ -45,6 +45,7 @@ export class GitComponent {
     name: new FormControl('', Validators.required),
   });
   deleteForm = new FormGroup({});
+  computeForm = new FormGroup({});
   data!: any;
   options!: any;
   visible = false;
@@ -116,6 +117,12 @@ export class GitComponent {
     this.gitService.delete(this.git.id!).subscribe((response) => {
       this.router.navigate(['']);
     });
+  }
+
+  compute() {
+    this.gitService.compute(this.git.id!).subscribe((response) => {
+      this.router.navigate(['']);
+    })
   }
 
   private getColors(length: number): string[] {

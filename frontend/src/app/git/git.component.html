@@ -44,6 +44,9 @@
                         <p class="text-4xl text-center p-3">Come back later, the metrics are being computed !</p>
                     </div>
                 }
+                <form [formGroup]="computeForm" (ngSubmit)="compute()">
+                    <p-button label="Confirm" severity="danger" type="submit" />
+                </form>
             } @placeholder (minimum 500ms) {
                 <div class="flex justify-content-center flex-wrap p-3">
                     <p-progressSpinner ariaLabel="loading" />
