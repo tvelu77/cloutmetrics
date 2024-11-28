@@ -105,7 +105,7 @@ public class MetricsOperations {
    */
   public Long countTags() throws GitAPIException {
     var tags = jgit.tagList().call();
-    return Long.valueOf(tags.size());
+    return (long) tags.size();
   }
   
   /**
@@ -118,7 +118,7 @@ public class MetricsOperations {
    */
   public Long countBranches() throws GitAPIException {
     var branches = jgit.branchList().call();
-    return Long.valueOf(branches.size());
+    return (long) branches.size();
   }
   
   /**
@@ -178,7 +178,7 @@ public class MetricsOperations {
   
   /**
    * Counts the extension for each file in a git repository.<br>
-   * It will counts every known extension, so the extension used can be:<br>
+   * It will count every known extension, so the extension used can be:<br>
    * - From a programming language ;<br>
    * - From a data language ;<br>
    * - From a prose language ;<br>
@@ -213,7 +213,7 @@ public class MetricsOperations {
    * Counts the number of non-empty lines in each file in a git repository.<br>
    * However, for the counting, we use files with a programming language extension.
    *
-   * @param treewalk {@link org.eclipse.jgit.treewalk.Treewalk}
+   * @param treeWalk {@link org.eclipse.jgit.treewalk.TreeWalk}
    *        Used for iterate through each file. 
    * @return {@link java.util.Map} 
    *          Contaning a String (the language) key and a Long (number of non-empty lines) value.

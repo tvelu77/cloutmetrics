@@ -30,4 +30,8 @@ export class GitService {
   update(git: Git, id: number): Observable<Git> {
     return this.http.put<Git>(API_ROUTE + '/gits/' + id, git);
   }
+
+  compute(id: number): Observable<Git> {
+    return this.http.put<Git>(API_ROUTE + '/gits/' + id + '/compute', {});
+  }
 }
