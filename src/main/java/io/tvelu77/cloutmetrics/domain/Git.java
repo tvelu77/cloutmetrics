@@ -1,6 +1,5 @@
-package io.tvelu77.cloutmetrics.git;
+package io.tvelu77.cloutmetrics.domain;
 
-import io.tvelu77.cloutmetrics.metrics.Metrics;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

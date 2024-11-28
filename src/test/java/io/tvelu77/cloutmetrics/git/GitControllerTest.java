@@ -2,6 +2,10 @@ package io.tvelu77.cloutmetrics.git;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import io.tvelu77.cloutmetrics.domain.Git;
+import io.tvelu77.cloutmetrics.domain.GitStatus;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.IOException;
 import org.hamcrest.CoreMatchers;

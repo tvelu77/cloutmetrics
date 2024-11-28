@@ -1,4 +1,4 @@
-package io.tvelu77.cloutmetrics.metrics;
+package io.tvelu77.cloutmetrics.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

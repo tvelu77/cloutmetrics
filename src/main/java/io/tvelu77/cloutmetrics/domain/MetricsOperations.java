@@ -1,8 +1,7 @@
-package io.tvelu77.cloutmetrics.metrics;
+package io.tvelu77.cloutmetrics.domain;
 
-import io.tvelu77.cloutmetrics.Utils;
-import io.tvelu77.cloutmetrics.git.Git;
-import io.tvelu77.cloutmetrics.utils.LanguageType;
+import io.tvelu77.cloutmetrics.domain.utils.LanguageType;
+import io.tvelu77.cloutmetrics.domain.utils.Utils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

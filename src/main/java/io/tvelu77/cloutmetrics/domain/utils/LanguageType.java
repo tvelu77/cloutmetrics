@@ -1,4 +1,4 @@
-package io.tvelu77.cloutmetrics.utils;
+package io.tvelu77.cloutmetrics.domain.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

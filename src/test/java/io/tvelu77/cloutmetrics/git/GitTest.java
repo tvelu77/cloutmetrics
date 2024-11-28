@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import io.tvelu77.cloutmetrics.metrics.Metrics;
+import io.tvelu77.cloutmetrics.domain.Git;
+import io.tvelu77.cloutmetrics.domain.GitStatus;
+import io.tvelu77.cloutmetrics.domain.Metrics;
+
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

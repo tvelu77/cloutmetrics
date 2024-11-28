@@ -1,7 +1,6 @@
-package io.tvelu77.cloutmetrics;
+package io.tvelu77.cloutmetrics.domain.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.tvelu77.cloutmetrics.utils.Language;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;

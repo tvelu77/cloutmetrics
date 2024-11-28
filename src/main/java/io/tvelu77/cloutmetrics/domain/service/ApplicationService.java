@@ -1,4 +1,4 @@
-package io.tvelu77.cloutmetrics;
+package io.tvelu77.cloutmetrics.domain.service;
 
 import java.util.List;
 

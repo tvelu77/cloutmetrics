@@ -1,6 +1,5 @@
-package io.tvelu77.cloutmetrics.utils;
+package io.tvelu77.cloutmetrics.domain.utils;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import java.util.Objects;
