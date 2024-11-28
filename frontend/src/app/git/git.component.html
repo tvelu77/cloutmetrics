@@ -38,15 +38,21 @@
                     <div class="flex justify-content-center flex-wrap p-3">
                         <p class="text-4xl text-center p-3">An error has occured, please restart or delete this entry !</p>
                     </div>
+                } @else if (git.status === gitStatus.UPLOADED) {
+                    <div class="flex justify-content-center flex-wrap p-3">
+                        <p class="text-4xl text-center p-3">Click on the button to start computing !</p>
+                    </div>
                 } @else {
                     <div class="flex justify-content-center flex-wrap p-3">
                         <p-progressSpinner ariaLabel="loading" />
                         <p class="text-4xl text-center p-3">Come back later, the metrics are being computed !</p>
                     </div>
                 }
-                <form [formGroup]="computeForm" (ngSubmit)="compute()">
-                    <p-button label="Confirm" severity="danger" type="submit" />
-                </form>
+                @if (git.status !== gitStatus.IN_PROGESS) {
+                    <form [formGroup]="computeForm" (ngSubmit)="compute()">
+                        <p-button label="Compute" severity="danger" type="submit" />
+                    </form>
+                }
             } @placeholder (minimum 500ms) {
                 <div class="flex justify-content-center flex-wrap p-3">
                     <p-progressSpinner ariaLabel="loading" />
