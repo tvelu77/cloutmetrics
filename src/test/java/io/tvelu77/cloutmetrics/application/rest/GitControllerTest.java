@@ -1,11 +1,9 @@
-package io.tvelu77.cloutmetrics.git;
+package io.tvelu77.cloutmetrics.application.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import io.tvelu77.cloutmetrics.domain.Git;
 import io.tvelu77.cloutmetrics.domain.GitStatus;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.IOException;
 import org.hamcrest.CoreMatchers;
@@ -17,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
