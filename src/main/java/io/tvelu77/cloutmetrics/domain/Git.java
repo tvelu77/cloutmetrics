@@ -1,6 +1,5 @@
-package io.tvelu77.cloutmetrics.git;
+package io.tvelu77.cloutmetrics.domain;
 
-import io.tvelu77.cloutmetrics.metrics.Metrics;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +22,7 @@ import java.util.Objects;
 public class Git {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   
   @Column(length = 256, nullable = false)

@@ -1,12 +1,9 @@
-package io.tvelu77.cloutmetrics.git;
+package io.tvelu77.cloutmetrics.domain;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import io.tvelu77.cloutmetrics.metrics.Metrics;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
 
 /**

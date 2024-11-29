@@ -1,5 +1,7 @@
-package io.tvelu77.cloutmetrics.git;
+package io.tvelu77.cloutmetrics.application.rest;
 
+import io.tvelu77.cloutmetrics.domain.Git;
+import io.tvelu77.cloutmetrics.domain.service.GitService;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;

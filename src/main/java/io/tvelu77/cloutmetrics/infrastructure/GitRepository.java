@@ -1,5 +1,6 @@
-package io.tvelu77.cloutmetrics.git;
+package io.tvelu77.cloutmetrics.infrastructure;
 
+import io.tvelu77.cloutmetrics.domain.Git;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

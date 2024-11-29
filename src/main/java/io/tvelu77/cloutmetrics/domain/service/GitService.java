@@ -1,8 +1,10 @@
-package io.tvelu77.cloutmetrics.git;
+package io.tvelu77.cloutmetrics.domain.service;
 
-import io.tvelu77.cloutmetrics.ApplicationService;
-import io.tvelu77.cloutmetrics.Utils;
-import io.tvelu77.cloutmetrics.metrics.MetricsOperations;
+import io.tvelu77.cloutmetrics.domain.Git;
+import io.tvelu77.cloutmetrics.domain.GitStatus;
+import io.tvelu77.cloutmetrics.domain.MetricsOperations;
+import io.tvelu77.cloutmetrics.domain.utils.Utils;
+import io.tvelu77.cloutmetrics.infrastructure.GitRepository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
