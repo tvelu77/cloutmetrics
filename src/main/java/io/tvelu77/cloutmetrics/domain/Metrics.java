@@ -22,7 +22,7 @@ import java.util.Objects;
 public class Metrics {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column
   private Long id;
   

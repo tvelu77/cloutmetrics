@@ -22,7 +22,7 @@ import java.util.Objects;
 public class Git {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   
   @Column(length = 256, nullable = false)
