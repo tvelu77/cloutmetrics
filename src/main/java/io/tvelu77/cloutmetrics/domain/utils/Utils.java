@@ -20,6 +20,10 @@ public class Utils {
   @Autowired
   private Environment env;
 
+  /**
+   * Returns the path of cloned and downloaded git.<br>
+   * It refers to the env properties file of the project.
+   */
   public String getLocalRepositoryPath() {
     return env.getProperty("repositories.path");
   }

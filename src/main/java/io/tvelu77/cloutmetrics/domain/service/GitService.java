@@ -32,7 +32,7 @@ public class GitService implements ApplicationService<Git> {
   private Utils utils;
 
   @Override
-  public boolean add(Git git) {
+  public boolean save(Git git) {
     // TODO : DTO should be used here !
     Objects.requireNonNull(git);
     gitRepository.save(git);
@@ -104,6 +104,12 @@ public class GitService implements ApplicationService<Git> {
     return gitRepository.findById(id).orElseThrow(NoSuchElementException::new);
   }
 
+  /**
+   * Deletes all the files associated with an entry in the database.
+   *
+   * @param directory {@link Path}, the git's local path.
+   * @throws IOException If a file couldn't be deleted.
+   */
   private void deleteDirectory(Path directory) throws IOException {
     try (var paths = Files.walk(directory)) {
       paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
@@ -114,6 +120,14 @@ public class GitService implements ApplicationService<Git> {
     }
   }
 
+  /**
+   * Renames a directory if the user has changed the {@link Git}'s name.<br>
+   * This method creates a new directory and moves all the files into it.
+   *
+   * @param directory {@link Path}, the old directory.
+   * @param newDirectory {@link Path}, the new directory.
+   * @throws IOException If the files couldn't be moved.
+   */
   private void renameDirectory(Path directory, Path newDirectory) throws IOException {
     try {
       Files.move(directory,
@@ -127,13 +141,18 @@ public class GitService implements ApplicationService<Git> {
     }
   }
   
+  /**
+   * Computes all the {@link Metrics} for a {@link Git}.
+   *
+   * @param git {@link Git}, the git where you want to calculate its metrics.
+   */
   private void compute(Git git) {
     try {
       var operations = new MetricsOperations(git,
           Path.of(utils.getLocalRepositoryPath() + git.getName()));
       var metrics = git.getMetrics();
       operations.openRepository();
-      metrics.setOwner(operations.getGitOwner());
+      //metrics.setOwner(operations.getGitOwner());
       metrics.setTotalCommits(operations.countCommits());
       metrics.setTotalTags(operations.countTags());
       metrics.setTotalBranches(operations.countBranches());

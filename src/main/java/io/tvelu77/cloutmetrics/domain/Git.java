@@ -70,6 +70,11 @@ public class Git {
     this.url = Objects.requireNonNull(url, "Git's url cannot be null !");
   }
   
+  /**
+   * Returns the object's id.
+   *
+   * @return {@link Long}, its id.
+   */
   public Long getId() {
     return id;
   }
@@ -87,14 +92,31 @@ public class Git {
     this.id = Objects.requireNonNull(id, "Git's id cannot be null !");
   }
 
+  /**
+   * Returns the object's name.
+   *
+   * @return {@link String}, its name.
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Sets the name attribute.<br>
+   * The given parameter should not be null.
+   *
+   * @param name {@link String}, the name.
+   */
   public void setName(String name) {
     this.name = Objects.requireNonNull(name, "Git's name cannot be null !");
   }
 
+  /**
+   * Returns the datetime.<br>
+   * By default, it is the datetime when the git was instantiated.
+   *
+   * @return {@link LocalDateTime}, the datetime when the object has been created.
+   */
   public LocalDateTime getDate() {
     return date;
   }
@@ -112,26 +134,61 @@ public class Git {
     this.date = Objects.requireNonNull(date);
   }
 
+  /**
+   * Returns the URL.
+   *
+   * @return {@link String}, the URL as a string.
+   */
   public String getUrl() {
     return url;
   }
 
+  /**
+   * Sets the URL.<br>
+   * The given URL should not be null.
+   *
+   * @param url {@link String}, the URL as a string.
+   */
   public void setUrl(String url) {
     this.url = Objects.requireNonNull(url);
   }
 
+  /**
+   * Returns the "status" attribute.<br>
+   * By default, the attribute is {@link GitStatus#UPLOADED}.
+   *
+   * @return {@link GitStatus}, the current status.
+   */
   public GitStatus getStatus() {
     return status;
   }
 
+  /**
+   * Sets the status.<br>
+   * The status should not be null.
+   *
+   * @param status {@link GitStatus}, the new status.
+   */
   public void setStatus(GitStatus status) {
     this.status = Objects.requireNonNull(status);
   }
   
+  /**
+   * Returns the metrics.<br>
+   * By default, it is an empty {@link Metrics}.
+   *
+   * @return {@link Metrics}, the current metrics linked to this git.
+   */
   public Metrics getMetrics() {
     return metrics;
   }
   
+  /**
+   * Sets the metrics.<br>
+   * The given metrics should not be null.
+   *
+   * @param metrics {@link Metrics}, the new metrics.
+   */
   public void setMetrics(Metrics metrics) {
     this.metrics = Objects.requireNonNull(metrics);
   }

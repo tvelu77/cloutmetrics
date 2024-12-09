@@ -18,9 +18,10 @@ public class CloutmetricsApplication {
   }
   
   /**
-   * Configures CORS policy.
+   * Configures CORS policy and authorize theses HTTP requests :<br>
+   * HEAD, GET, POST, PUT, DELETE, PATCH, OPTIONS.
    *
-   * @return WebMvcConfigurer, enables cors policy.
+   * @return {@link CorsRegistry}, enables cors policy.
    */
   @Bean
   public WebMvcConfigurer corsConfigurer() {
